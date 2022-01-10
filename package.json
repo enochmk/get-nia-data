@@ -1,0 +1,29 @@
+{
+  "dependencies": {
+    "axios": "^0.24.0",
+    "chalk": "^5.0.0",
+    "dotenv": "^10.0.0",
+    "moment": "^2.29.1",
+    "mssql": "^7.3.0",
+    "nanoid": "^3.1.30",
+    "typeorm": "^0.2.41",
+    "winston": "^3.3.4"
+  },
+  "name": "get-nia-data",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/enochmk/get-nia-data.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/enochmk/get-nia-data/issues"
+  },
+  "homepage": "https://github.com/enochmk/get-nia-data#readme",
+  "description": ""
+}
