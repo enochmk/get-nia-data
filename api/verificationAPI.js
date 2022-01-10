@@ -20,12 +20,26 @@ const verificationAPI = async (pinNumber, surname) => {
 	try {
 		const response = await axios(config);
 		logger.info('Success', response.data);
+
+		return {
+			status: true,
+			message: 'Success',
+		};
 	} catch (error) {
+		let message = error.message;
+
 		if (error.response) {
 			logger.error(error.response.data);
+			message = error.response.data.message;
 		} else {
 			logger.error(error.message, {});
+			message = error.message;
 		}
+
+		return {
+			status: false,
+			message,
+		};
 	}
 };
 

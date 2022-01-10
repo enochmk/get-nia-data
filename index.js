@@ -1,9 +1,12 @@
 const dotenv = require('dotenv');
-const { getConnection } = require('typeorm');
 const connectToDb = require('./database/connection');
 const { isVerified } = require('./services/nia_verify');
 const logger = require('./utils/logger');
 const verificationAPI = require('./api/verificationAPI');
+const {
+	getRetryRequests,
+	updateRequest,
+} = require('./services/nia_retry_requests');
 
 dotenv.config();
 
@@ -13,15 +16,34 @@ const main = async () => {
 	try {
 		conn = await connectToDb();
 
-		const SURNAME = 'BRAY';
-		const PIN_NUMBER = 'GHA-713382913-5';
+		const dataset = await getRetryRequests();
 
-		const response = await verificationAPI(PIN_NUMBER, SURNAME);
+		logger.verbose(`Starting - Total Rows in dataset: ${dataset.length}.`);
+
+		for (i = 0; i < dataset.length; i++) {
+			const row = dataset[i];
+			logger.verbose(`Processing data ${i + 1}/${dataset.length}`);
+
+			const { ID, SURNAME, PIN_NUMBER } = row;
+
+			const cardValid = await isVerified(PIN_NUMBER, SURNAME);
+			if (cardValid) {
+				await updateRequest(ID, 'TRUE', 'Data already in system');
+				continue;
+			}
+
+			// MAKE API CALL;
+			const response = await verificationAPI(PIN_NUMBER, SURNAME);
+			const status = response.status ? 'TRUE' : 'FALSE';
+			const message = response.message;
+			await updateRequest(ID, status, message);
+		}
 	} catch (error) {
-		console.log(error);
-		process.exit(1);
+		logger.error(error);
 	} finally {
+		logger.verbose('Script ended. Database connection closed');
 		await conn.close();
+		process.exit(1);
 	}
 };
 

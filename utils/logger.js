@@ -56,6 +56,15 @@ const transports = [
 			'combined.log'
 		),
 	}),
+	new winston.transports.File({
+		level: 'verbose',
+		format: json,
+		filename: path.join(
+			'logs',
+			moment().format('YYYYMMDD_HHmmss'),
+			'verbose.log'
+		),
+	}),
 ];
 
 // create logger with configurations
