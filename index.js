@@ -15,11 +15,9 @@ const main = async () => {
 
 	try {
 		conn = await connectToDb();
-
 		const dataset = await getRetryRequests();
 
 		logger.verbose(`Starting - Total Rows in dataset: ${dataset.length}.`);
-
 		for (i = 0; i < dataset.length; i++) {
 			const row = dataset[i];
 			logger.verbose(`Processing data ${i + 1}/${dataset.length}`);
@@ -38,10 +36,11 @@ const main = async () => {
 			const message = response.message;
 			await updateRequest(ID, status, message);
 		}
+		logger.verbose(`Ending - Total Rows in dataset: ${dataset.length}.`);
 	} catch (error) {
 		logger.error(error);
 	} finally {
-		logger.verbose('Script ended. Database connection closed');
+		logger.verbose('Database connection closed');
 		await conn.close();
 		process.exit(1);
 	}
